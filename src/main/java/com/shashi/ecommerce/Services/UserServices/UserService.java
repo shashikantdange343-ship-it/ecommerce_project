@@ -6,4 +6,6 @@ public interface UserService {
 
     AuthDTOs.RegisterResponseDTO registerUser(AuthDTOs.RegisterRequestDTO request);
 
+    AuthDTOs.LoginResponseDTO loginUser(AuthDTOs.LoginRequestDTO request);
+
 }

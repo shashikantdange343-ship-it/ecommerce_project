@@ -18,7 +18,7 @@ import java.util.function.Function;
 @Component
 public class JwtUtil {
 
-    private static final String secreteKey = "MySuperSecretKeyForPremiumEcommerceAppWhichNeedsToBeVeryLong0newOneStarted7,10,2026";
+    private static final String secreteKey = "TXlTdXBlclNlY3JldEtleUZvclByZW1pdW1FY29tbWVyY2VBcHBXaGljaE5lZWRzVG9CZVZlcnlMb25nMG5ld09uZVN0YXJ0ZWQ3LDEwLDIwMjY=";
 
     public String generateToken(UserDetails userDetails){
         Map<String , Object> claims = new HashMap<>();
@@ -31,7 +31,7 @@ public class JwtUtil {
                 .setClaims(claims)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + 1000*60*60*2))
-                .signWith(getSigningKey(), SignatureAlgorithm.ES256)
+                .signWith(getSigningKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
 
