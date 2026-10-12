@@ -1,6 +1,6 @@
 package com.shashi.ecommerce.Exceptons;
 
-import com.shashi.ecommerce.DTOs.UserDTOs.ExceptionDTO;
+import com.shashi.ecommerce.DTOs.ExceptionDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -37,6 +37,7 @@ public class GlobalExceptions {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String , String >> handleMethodArgumentNotValidException(MethodArgumentNotValidException exception){
+
         Map<String , String > error = new HashMap<>();
 
         for (FieldError error1 : exception.getBindingResult().getFieldErrors()){

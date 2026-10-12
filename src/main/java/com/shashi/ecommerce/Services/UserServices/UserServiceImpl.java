@@ -72,4 +72,13 @@ public class UserServiceImpl implements UserService{
             throw new ResourceNotFoundException("Wrong User Name Or Password !");
         }
     }
+
+    @Override
+    public User getUser(String userName) {
+       Optional<User> optionalUser = userRepository.findByUsername(userName);
+       if (optionalUser.isEmpty()){
+           throw new ResourceNotFoundException("User Not Found !");
+       }
+        return optionalUser.get();
+    }
 }

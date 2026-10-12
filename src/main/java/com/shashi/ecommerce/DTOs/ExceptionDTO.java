@@ -1,4 +1,4 @@
-package com.shashi.ecommerce.DTOs.UserDTOs;
+package com.shashi.ecommerce.DTOs;
 
 import java.time.LocalDateTime;
 

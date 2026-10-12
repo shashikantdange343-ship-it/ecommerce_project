@@ -22,7 +22,7 @@ public class ProductVariant {
     private Long id ;
 
     @Column(nullable = false)
-    private int stockKeepingUnit;
+    private Integer stockKeepingUnit;
 
     @Column(nullable = false)
     private String color;
