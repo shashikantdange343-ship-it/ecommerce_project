@@ -1,9 +1,16 @@
 package com.shashi.ecommerce.Services;
 
 import com.shashi.ecommerce.DTOs.CartDTOs.CartDTOS;
+import com.shashi.ecommerce.DTOs.OrdersDTOs.OrderDTOs;
+import com.shashi.ecommerce.DTOs.OrdersDTOs.OrderItemDTOs;
 import com.shashi.ecommerce.DTOs.ProductsDTOs.*;
+import com.shashi.ecommerce.DTOs.UserDTOs.AddressDTOs;
 import com.shashi.ecommerce.Entity.Cart.CartItems;
+import com.shashi.ecommerce.Entity.Orders.OrderItems;
+import com.shashi.ecommerce.Entity.Orders.Orders;
 import com.shashi.ecommerce.Entity.ProductsEntity.*;
+import com.shashi.ecommerce.Entity.UsersEntity.Addresses;
+import com.shashi.ecommerce.Entity.UsersEntity.User;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -74,15 +81,42 @@ public class ClassConverterService {
     }
 
 
+    //ADDRESSES CLASS CONVERTER
+
+
+    public Addresses toAddress(AddressDTOs.SetAddressRequestDTO requestDTO, User user){
+         Addresses addresses = new Addresses();
+         addresses.setAddressType(requestDTO.addressType());
+         addresses.setCity(requestDTO.city());
+         addresses.setPinCode(requestDTO.pinCode());
+         addresses.setState(requestDTO.state());
+         addresses.setStreet(requestDTO.street());
+         addresses.setUser(user);
+         return addresses;
+    }
+
+    public AddressDTOs.SetAddressResponseDTO addressResponseDTO(Addresses addresses){
+         return new AddressDTOs.SetAddressResponseDTO(
+                 addresses.getId(),
+                 addresses.getAddressType(),
+                 addresses.getStreet(),
+                 addresses.getCity(),
+                 addresses.getState(),
+                 addresses.getPinCode()
+         );
+    }
+
+
     // CART CLASS CONVERTERS
 
 
-    public ProductVariantsDTOS.CartProductVariantDTO toCartProductVariantDTO(CartItems cartItems){
-      return new ProductVariantsDTOS.CartProductVariantDTO(
+    public ProductVariantsDTOS.ProductVariantDTO toCartProductVariantDTO(CartItems cartItems){
+      return new ProductVariantsDTOS.ProductVariantDTO(
                 cartItems.getProductVariant().getId(),
                 cartItems.getProductVariant().getColor(),
                 cartItems.getProductVariant().getSize(),
-                cartItems.getProductVariant().getExtraPrice()
+                cartItems.getProductVariant().getExtraPrice() + cartItems.getProductVariant().getProducts().getBasePrice(),
+              cartItems.getProductVariant().getExtraPrice()
         );
     }
 
@@ -90,8 +124,42 @@ public class ClassConverterService {
         return new CartDTOS.CartProductDTO(
                 cartItems.getProductVariant().getProducts().getProductName(),
                 cartItems.getProductVariant().getProducts().getBrands().getBrandName(),
-                toCartProductVariantDTO(cartItems)
+                toCartProductVariantDTO(cartItems),
+                cartItems.getQuantity()
         );
+    }
+
+
+
+    // ORDERS CLASS CONVERTERS
+
+    public OrderItemDTOs.OrderItemVariantDetailsDTO itemVariantDetailsDTO(OrderItems orderItems){
+         return new OrderItemDTOs.OrderItemVariantDetailsDTO(
+                 orderItems.getProductVariant().getId(),
+                 orderItems.getProductVariant().getColor(),
+                 orderItems.getProductVariant().getSize(),
+                 orderItems.getPriceAtThatTime(),
+                 orderItems.getProductVariant().getExtraPrice()
+         );
+    }
+
+    public OrderItemDTOs.OrderItemDetailsDTO orderItemDetailsDTO(OrderItems orderItems){
+         return new OrderItemDTOs.OrderItemDetailsDTO(
+                 orderItems.getProductVariant().getProducts().getProductName(),
+                 orderItems.getProductVariant().getProducts().getBrands().getBrandName(),
+                 itemVariantDetailsDTO(orderItems),
+                 orderItems.getQuantity(),
+                 orderItems.getOrders().getStatus()
+                 );
+    }
+
+
+    public OrderDTOs.OrderDetailsDTO toOrderDetailsDTO(Orders orders){
+
+         return new OrderDTOs.OrderDetailsDTO(
+                 orders.getOrderItems().stream().map(this::orderItemDetailsDTO).toList(),
+                 orders.getTotalAmount()
+         );
     }
 
 }

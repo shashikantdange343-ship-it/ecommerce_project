@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
+
 
 @Service
 @RequiredArgsConstructor
@@ -23,13 +23,15 @@ public class ProductServiceImpl implements ProductService{
 
     private final ClassConverterService classConverterService;
 
-    private final BrandsRepository brandsRepository;
+    private final BrandService brandService;
 
-    private final CategoryRepository categoryRepository;
+    private final CategoryService categoryService;
 
     private final ProductVariantsService productVariantsService;
 
     private final ProductImagesService productImagesService;
+
+    private final InventoryServiceImpl inventoryService;
 
     @Override
     public Page<ProductDTOS.GetAllProductDTO> getProducts(int pageNumber) {
@@ -54,28 +56,49 @@ public class ProductServiceImpl implements ProductService{
 
        if(optionalProducts.isEmpty()) {
 
-        Products newProduct = new Products();
+           Products newProduct = new Products();
 
-        newProduct.setBaseDescription(request.productRequest().baseDescription());
-        newProduct.setBasePrice(request.productRequest().basePrice());
-        newProduct.setBrands(brand);
-        newProduct.setProductName(request.productRequest().productName());
-        newProduct.setIsActive(true);
-        newProduct.setCategories(category);
+           newProduct.setBaseDescription(request.productRequest().baseDescription());
+           newProduct.setBasePrice(request.productRequest().basePrice());
+           newProduct.setBrands(brand);
+           newProduct.setProductName(request.productRequest().productName());
+           newProduct.setIsActive(true);
+           newProduct.setCategories(category);
+
+           for (ProductImages productsImages : listOfProductImages){
+               productsImages.setProducts(newProduct);
+           }
+           newProduct.setProductImages(listOfProductImages);
+
+           for (ProductVariant productsVariants : listOfProductVariants){
+               productsVariants.setProducts(newProduct);
+               productsVariants.setInventory(inventoryService.addToInventory(productsVariants));
+           }
+           newProduct.setProductVariant(listOfProductVariants);
+
+           productRepository.save(newProduct);
+
+           return new ProductDTOS.AddProductResponseDTO("Product Added Successfully");
+
+       }
+
+       Products products = optionalProducts.get();
 
         for (ProductImages productsImages : listOfProductImages){
-            productsImages.setProducts(newProduct);
+            productsImages.setProducts(products);
         }
-        newProduct.setProductImages(listOfProductImages);
+        products.getProductImages().addAll(listOfProductImages);
 
         for (ProductVariant productsVariants : listOfProductVariants){
-            productsVariants.setProducts(newProduct);
+            productsVariants.setProducts(products);
+            productsVariants.setInventory(inventoryService.addToInventory(productsVariants));
         }
-        newProduct.setProductVariant(listOfProductVariants);
+        products.getProductVariant().addAll(listOfProductVariants);
 
-        productRepository.save(newProduct);
+        productRepository.save(products);
 
-        return new ProductDTOS.AddProductResponseDTO("Product Added Successfully");
+        return new ProductDTOS.AddProductResponseDTO("Product Variants Added Successfully");
+
     }
 
     @Override

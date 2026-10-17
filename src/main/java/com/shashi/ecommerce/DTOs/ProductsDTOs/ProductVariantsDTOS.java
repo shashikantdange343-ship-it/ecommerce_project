@@ -27,13 +27,15 @@ public class ProductVariantsDTOS {
 
             Double extraPrice
     ) {}
-    public record CartProductVariantDTO(
+    public record ProductVariantDTO(
             Long id,
 
             String color,
 
             Double size,
 
-            Double totalPrice
+            Double price,
+
+            Double extraPrice
     ) {}
 }

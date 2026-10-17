@@ -45,4 +45,14 @@ public class GlobalExceptions {
         }
         return new ResponseEntity<>(error,HttpStatus.BAD_REQUEST);
     }
+    @ExceptionHandler(CustomException.class)
+    public ResponseEntity<ExceptionDTO> handleCustomException(CustomException exception ,WebRequest request){
+        ExceptionDTO exceptionDTO = new ExceptionDTO(
+                LocalDateTime.now(),
+                exception.getMessage(),
+                request.getDescription(false),
+                HttpStatus.BAD_REQUEST.value()
+        );
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exceptionDTO);
+    }
 }

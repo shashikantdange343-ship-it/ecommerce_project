@@ -17,16 +17,26 @@ public class ProductVariantsServiceImpl implements ProductVariantsService{
 
     @Override
     public List<ProductVariant> getProductVariants(long productId) {
+
        return productVariantRepository.findByProductsId(productId);
+
     }
 
     @Override
     public ProductVariant getProductVariant(long variantId) {
+
         Optional<ProductVariant> optionalProductVariant = productVariantRepository.findById(variantId);
         if (optionalProductVariant.isEmpty()){
             throw new ResourceNotFoundException("Product variant Not Found !");
         }
+
         return optionalProductVariant.get();
+    }
+
+    @Override
+    public ProductVariant saveProductVariant(ProductVariant productVariant) {
+
+        return productVariantRepository.save(productVariant);
     }
 
 }

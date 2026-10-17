@@ -25,10 +25,14 @@ public class CartDTOS {
 
             String brandName,
 
-            ProductVariantsDTOS.CartProductVariantDTO productVariant
+            ProductVariantsDTOS.ProductVariantDTO productVariant,
+
+            Integer quantity
     ){}
 
     public record ViewCartDTO(
-            List<CartProductDTO> cartProducts
+            List<CartProductDTO> cartProducts,
+
+            Double totalAmount
     ){}
 }

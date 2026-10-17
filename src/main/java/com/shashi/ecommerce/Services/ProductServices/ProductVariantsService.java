@@ -5,6 +5,11 @@ import com.shashi.ecommerce.Entity.ProductsEntity.ProductVariant;
 import java.util.List;
 
 public interface ProductVariantsService {
+
     List<ProductVariant> getProductVariants(long productId);
+
     ProductVariant getProductVariant(long variantId);
+
+    ProductVariant saveProductVariant(ProductVariant productVariant);
+
 }

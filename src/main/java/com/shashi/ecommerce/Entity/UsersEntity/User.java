@@ -1,5 +1,6 @@
 package com.shashi.ecommerce.Entity.UsersEntity;
 
+import com.shashi.ecommerce.Entity.Orders.Orders;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -60,6 +61,9 @@ public class User implements UserDetails {
 
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
     private List<Addresses> addresses;
+
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
+    private List<Orders> orders;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

@@ -5,6 +5,7 @@ import com.shashi.ecommerce.Entity.ProductsEntity.Products;
 import org.springframework.data.domain.Page;
 
 public interface ProductService {
+
     Page<ProductDTOS.GetAllProductDTO> getProducts(int pageNumber);
 
     ProductDTOS.AddProductResponseDTO addProduct(ProductDTOS.AddFullProductRequestDTO request);

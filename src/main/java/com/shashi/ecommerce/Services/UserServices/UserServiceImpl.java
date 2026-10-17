@@ -3,6 +3,7 @@ package com.shashi.ecommerce.Services.UserServices;
 import com.shashi.ecommerce.DTOs.UserDTOs.AuthDTOs;
 import com.shashi.ecommerce.Entity.UsersEntity.Roles;
 import com.shashi.ecommerce.Entity.UsersEntity.User;
+import com.shashi.ecommerce.Exceptons.CustomException;
 import com.shashi.ecommerce.Exceptons.ResourceNotFoundException;
 import com.shashi.ecommerce.Repository.UserRepositories.RolesRepository;
 import com.shashi.ecommerce.Repository.UserRepositories.UserRepository;
@@ -26,7 +27,7 @@ public class UserServiceImpl implements UserService{
 
     private final PasswordEncoder passwordEncoder;
 
-    private final RolesRepository rolesRepository;
+    private final RolesService rolesService;
 
     private final AuthenticationManager authenticationManager;
 
@@ -45,13 +46,7 @@ public class UserServiceImpl implements UserService{
         user.setLast_name(request.lastName());
         user.setPhone_no(request.PhoneNo());
 
-        Optional<Roles> optionalUserRole = rolesRepository.findByRoleName("ROLE_CUSTOMER");
-
-        if (optionalUserRole.isEmpty()){
-            throw new RuntimeException("Role Does Not Exists !");
-        }
-
-        Roles userRole = optionalUserRole.get();
+        Roles userRole = rolesService.getRole("ROLE_CUSTOMER");
 
         user.setRoles(List.of(userRole));
 
@@ -69,7 +64,7 @@ public class UserServiceImpl implements UserService{
             return new AuthDTOs.LoginResponseDTO(jwtToken, "LOGGED IN SUCCESSFULLY !");
         }
         catch (BadCredentialsException e){
-            throw new ResourceNotFoundException("Wrong User Name Or Password !");
+            throw new CustomException("Wrong User Name Or Password !");
         }
     }
 

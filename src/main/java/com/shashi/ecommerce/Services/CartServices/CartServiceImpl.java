@@ -33,8 +33,6 @@ public class CartServiceImpl implements CartService {
 
     private final CartItemService cartItemService;
 
-    private final ProductVariantRepository productVariantRepository;
-
     @Override
     public CartDTOS.AddToCartResponseDTO addToCart(CartDTOS.AddToCartRequestDTO request, String userName) {
         User existingUser = userService.getUser(userName);
@@ -77,14 +75,12 @@ public class CartServiceImpl implements CartService {
             userCart.getCartItems().add(newcartItem);
         }
         userCart.setTotalPrice(totalAmount+request.quantity()*productVariant.getProducts().getBasePrice()+productVariant.getExtraPrice());
-        if (productVariant.getStockKeepingUnit() <= 0 || request.quantity()>productVariant.getStockKeepingUnit()){
-            throw new RuntimeException("Out of Stoct");
-        }
 
-        productVariant.setStockKeepingUnit(productVariant.getStockKeepingUnit() - request.quantity());
-        productVariantRepository.save(productVariant);
+        productVariantsService.saveProductVariant(productVariant);
         cartRepository.save(userCart);
+
         return new CartDTOS.AddToCartResponseDTO(" Item Added Successfully !");
+
     }
 
 
@@ -94,8 +90,10 @@ public class CartServiceImpl implements CartService {
         Cart userCart = cartRepository.findByUserId(existingUser.getId());
 
         if (userCart == null){
-            return new CartDTOS.ViewCartDTO(new ArrayList<>());
+            return new CartDTOS.ViewCartDTO(new ArrayList<>(),0.0);
         }
-        return new CartDTOS.ViewCartDTO(cartItemService.getCartItems(userCart).stream().map(classConverterService::toCartProductDTO).toList());
+        return new CartDTOS.ViewCartDTO(cartItemService.getCartItems(userCart).stream()
+                .map(classConverterService::toCartProductDTO).toList(),
+                userCart.getTotalPrice());
     }
 }

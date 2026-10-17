@@ -26,6 +26,8 @@ public class Inventory {
 
     private Integer lowStockThreshold;
 
+    private Integer warehouse_id;
+
     @CreationTimestamp
     private LocalDateTime createdAt;
 

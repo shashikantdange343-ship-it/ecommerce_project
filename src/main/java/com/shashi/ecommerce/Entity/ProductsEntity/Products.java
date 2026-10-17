@@ -8,6 +8,7 @@ import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -44,9 +45,9 @@ public class Products {
     private Categories categories;
 
     @OneToMany(mappedBy = "products", cascade = CascadeType.ALL)
-    private List<ProductVariant> productVariant;
+    private List<ProductVariant> productVariant = new ArrayList<>();
 
     @OneToMany(mappedBy = "products", cascade = CascadeType.ALL)
-    private List<ProductImages> productImages;
+    private List<ProductImages> productImages = new ArrayList<>();
 
 }
