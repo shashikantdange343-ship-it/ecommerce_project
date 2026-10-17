@@ -46,13 +46,13 @@ public class ProductServiceImpl implements ProductService{
 
        List<ProductImages> listOfProductImages = request.imagesRequest().stream().map(classConverterService::toProductImage).toList();
        List<ProductVariant> listOfProductVariants = request.variantsRequest().stream().map(classConverterService::toProductVariant).toList();
-       Optional<Brands> optionalBrands = brandsRepository.findById(request.productRequest().brandId());
-       Optional<Categories> optionalCategories = categoryRepository.findById(request.categoryId());
-       if (optionalBrands.isEmpty() || optionalCategories.isEmpty()){
-           throw new ResourceNotFoundException("Brand or Category is Not Found !");
-       }
-       Categories category = optionalCategories.get();
-       Brands brand = optionalBrands.get();
+
+       Categories category = categoryService.getCategory(request.categoryId());
+       Brands brand = brandService.getBrands(request.productRequest().brandId());
+
+       Optional<Products> optionalProducts = productRepository.findByProductName(request.productRequest().productName());
+
+       if(optionalProducts.isEmpty()) {
 
         Products newProduct = new Products();
 
